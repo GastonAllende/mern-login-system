@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+require('dotenv').config()
 
-mongoose.connect('mongodb+srv://gaston_saa85:KeSha07-12@cluster0-jy1ju.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.DB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+})
 
 mongoose.connection.on('connected', function () {
   console.log('Mongoose default connection open');
