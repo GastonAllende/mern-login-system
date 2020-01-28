@@ -1,6 +1,135 @@
 import React, { Component } from 'react';
+import { Formik } from "formik";
+import * as Yup from "yup";
+import axios from 'axios';
+import swal from "sweetalert";
+
+const SignupSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email")
+    .required("Email is Required"),
+  password: Yup.string().required("Password is required")
+});
 
 class Login extends Component {
+
+  componentDidMount() {
+    if (localStorage.getItem("TOKEN_KEY") != null) {
+      return this.props.history.goBack();
+    }
+  }
+
+  submitForm = (values, history) => {
+    axios
+      .post("http://localhost:8080/login", values)
+      .then(res => {
+        if (res.data.result === "success") {
+          localStorage.setItem("TOKEN_KEY", res.data.token);
+          swal("Success!", res.data.message, "success")
+            .then(value => {
+              history.push("/dashboard");
+            });
+        } else if (res.data.result === "error") {
+          swal("Error!", res.data.message, "error");
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        swal("Error!", error, "error");
+      });
+  };
+
+  showForm = ({
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+    isSubmitting
+  }) => {
+
+    return (
+      <form onSubmit={handleSubmit} >
+        {errors.email && touched.email ? (
+          <small id="passwordHelp" className="text-danger">
+            {errors.email}
+          </small>
+        ) : null}
+
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            name="email"
+            onChange={handleChange}
+            value={values.email}
+            placeholder="Email"
+            className={
+              errors.email && touched.email
+                ? "form-control is-invalid"
+                : "form-control"
+            }
+          />
+          <div className="input-group-append">
+            <div className="input-group-text">
+              <span className="fas fa-envelope" />
+            </div>
+          </div>
+        </div>
+
+        {errors.password && touched.password ? (
+          <small id="passwordHelp" className="text-danger">
+            {errors.password}
+          </small>
+        ) : null}
+        <div className="input-group mb-3">
+          <input
+            type="password"
+            name="password"
+            onChange={handleChange}
+            value={values.password}
+            placeholder="Password"
+            className={
+              errors.password && touched.password
+                ? "form-control is-invalid"
+                : "form-control"
+            }
+          />
+          <div className="input-group-append">
+            <div className="input-group-text">
+              <span className="fas fa-lock" />
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-8">
+            <div className="icheck-primary">
+              <input
+                type="checkbox"
+                id="remember" />
+              <label htmlFor="remember">
+                Remember Me
+                     </label>
+            </div>
+          </div>
+          {/* /.col */}
+          <div className="col-4">
+            <button
+              disabled={isSubmitting}
+              type="submit"
+              className="btn btn-primary btn-block"
+            >
+              Sign in
+              </button>
+          </div>
+          {/* /.col */}
+        </div>
+      </ form>
+    );
+  }
+
+
   render() {
     return (
       <div className="login-page">
@@ -12,39 +141,22 @@ class Login extends Component {
           <div className="card">
             <div className="card-body login-card-body">
               <p className="login-box-msg">Sign in to start your session</p>
-              <form action="../../index3.html" method="post">
-                <div className="input-group mb-3">
-                  <input type="email" className="form-control" placeholder="Email" />
-                  <div className="input-group-append">
-                    <div className="input-group-text">
-                      <span className="fas fa-envelope" />
-                    </div>
-                  </div>
-                </div>
-                <div className="input-group mb-3">
-                  <input type="password" className="form-control" placeholder="Password" />
-                  <div className="input-group-append">
-                    <div className="input-group-text">
-                      <span className="fas fa-lock" />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-8">
-                    <div className="icheck-primary">
-                      <input type="checkbox" id="remember" />
-                      <label htmlFor="remember">
-                        Remember Me
-              </label>
-                    </div>
-                  </div>
-                  {/* /.col */}
-                  <div className="col-4">
-                    <button type="submit" className="btn btn-primary btn-block">Sign In</button>
-                  </div>
-                  {/* /.col */}
-                </div>
-              </form>
+              <Formik
+                initialValues={{
+                  email: "",
+                  password: "",
+                }}
+
+                onSubmit={(values, { setSubmitting }) => {
+                  console.log(values);
+                  this.submitForm(values, this.props.history);
+                  setSubmitting(false);
+                }}
+
+                validationSchema={SignupSchema}
+              >
+                {props => this.showForm(props)}
+              </Formik>
               <p className="mb-1">
                 <a href="forgot-password.html">I forgot my password</a>
               </p>

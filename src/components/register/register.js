@@ -84,7 +84,6 @@ class Register extends Component {
           </div>
         </div>
 
-
         {errors.email && touched.email ? (
           <small id="passwordHelp" className="text-danger">
             {errors.email}
@@ -183,7 +182,7 @@ class Register extends Component {
               type="submit"
               className="btn btn-primary btn-block"
             >
-              Register
+              Sign in
               </button>
           </div>
           {/* /.col */}
