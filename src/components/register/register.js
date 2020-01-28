@@ -3,6 +3,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';
 import swal from "sweetalert";
+import apis from '../apis/apis';
 
 const SignupSchema = Yup.object().shape({
 
@@ -18,14 +19,13 @@ const SignupSchema = Yup.object().shape({
     [Yup.ref("password"), null],
     "Both password need to be the same"
   )
-
 });
 
 class Register extends Component {
 
   submitForm = (values, history) => {
-    axios
-      .post("http://localhost:8080/register", values)
+    apis
+      .post("/register", values)
       .then(res => {
         console.log(res.data.result);
         if (res.data.result === "success") {

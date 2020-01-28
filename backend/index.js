@@ -4,7 +4,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("./jwt");
+const jsonwebtoken = require("jsonwebtoken");
+require('dotenv').config()
 require('./db');
+
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.MAIL_API);
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -24,28 +29,75 @@ const Users = require("./models/user");
 app.post("/register", async (req, res) => {
   try {
     req.body.password = await bcrypt.hash(req.body.password, 8);
-    await Users.create(req.body);
-    res.json({ result: "success", message: "Register successfully" });
+   
+    //const { username, email } = req.body;
+    const { first_name, last_name, email } = req.body;
+
+    const token = jsonwebtoken.sign(
+      { first_name, last_name, email },
+      "process.env.JWT_ACCOUNT_ACTIVATION",
+      { expiresIn: "7d" }
+    );
+
+    const emailData = {
+      from: "admin@business.com",
+      to: email,
+      subject: `Account activation link`,
+      html: `
+          <h1>Please use the following link to activate your account</h1>
+          <p>localhost:3000/activation/${token}</p>
+          <hr />
+          <p>This email may contain sensetive information</p>
+          <p>and link will  expired in 60 minutes</p>
+      `
+    };
+
+    req.body.activated_token = token;
+
+    let user = await Users.create(req.body).catch(err => {
+       return res.json({
+          result: "error",
+          message: err.message
+        });
+    })
+
+ 
+    sgMail
+      .send(emailData)
+      .then(sent => {
+        // console.log('SIGNUP EMAIL SENT', sent)
+        return res.json({
+          result: "success",
+          message: `Email has been sent to ${email}. Follow the instruction to activate your account`
+        });
+      })
+      .catch(err => {
+        // console.log('SIGNUP EMAIL SENT ERROR', err)
+        return res.json({
+          result: "error",
+          message: err.message
+        });
+      });
   } catch (err) {
-    res.json({ result: "error", message: err.errmsg });
+    res.json({ result: "error 1", message: err.errmsg });
   }
 });
 
-
-
 app.post("/login", async (req, res) => {
-  let doc = await Users.findOne({ email: req.body.email });
-  if (doc) {
-    if (bcrypt.compareSync(req.body.password, doc.password)) {
+  let user = await Users.findOne({ email: req.body.email });
+  if (user) {
+    if (bcrypt.compareSync(req.body.password, user.password)) {
+
       const payload = {
-        id: doc._id,
-        level: doc.level,
-        username: doc.username
+        id: user._id,
+        level: user.level,
+        username: user.username
       };
 
       let token = jwt.sign(payload);
-      console.log(token);
+      
       res.json({ result: "success", token, message: "Login successfully" });
+
     } else {
       // Invalid password
       res.json({ result: "error", message: "Invalid password" });

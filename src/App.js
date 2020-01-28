@@ -18,12 +18,11 @@ const isLoggedIn = () => {
 };
 
 // Protected Route
-const SecuredRoute = ({ component: Component, ...rest }) => (
+const SecuredRoute = ({ component: Component, ...rest }) => (  
   <Route
     {...rest}
     render={props =>
       // ternary condition
-
       isLoggedIn() === true ? (
         <Component {...props} />
       ) : (

@@ -3,6 +3,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';
 import swal from "sweetalert";
+import apis from '../apis/apis';
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
@@ -20,8 +21,8 @@ class Login extends Component {
   }
 
   submitForm = (values, history) => {
-    axios
-      .post("http://localhost:8080/login", values)
+    apis
+      .post("/login", values)
       .then(res => {
         if (res.data.result === "success") {
           localStorage.setItem("TOKEN_KEY", res.data.token);
