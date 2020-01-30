@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import axios from 'axios';
 import swal from "sweetalert";
 import apis from '../apis/apis';
+import { Link } from "react-router-dom";
 
 const SignupSchema = Yup.object().shape({
 
@@ -220,8 +221,7 @@ class Register extends Component {
               >
                 {props => this.showForm(props)}
               </Formik>
-
-              <a href="login.html" className="text-center">I already have a membership</a>
+              <Link to="/login">Register a new membership</Link>
             </div>
             {/* /.form-box */}
           </div>{/* /.card */}

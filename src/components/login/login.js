@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import axios from 'axios';
 import swal from "sweetalert";
 import apis from '../apis/apis';
+import { Link } from "react-router-dom";
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
@@ -162,7 +163,7 @@ class Login extends Component {
                 <a href="forgot-password.html">I forgot my password</a>
               </p>
               <p className="mb-0">
-                <a href="register.html" className="text-center">Register a new membership</a>
+                <Link to="/register">Register a new membership</Link>
               </p>
             </div>
             {/* /.login-card-body */}

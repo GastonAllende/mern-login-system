@@ -29,7 +29,7 @@ const Users = require("./models/user");
 app.post("/register", async (req, res) => {
   try {
     req.body.password = await bcrypt.hash(req.body.password, 8);
-   
+
     //const { username, email } = req.body;
     const { first_name, last_name, email } = req.body;
 
@@ -45,27 +45,27 @@ app.post("/register", async (req, res) => {
       subject: `Account activation link`,
       html: `
           <h1>Please use the following link to activate your account</h1>
-          <p>localhost:3000/activation/${token}</p>
+          <a href="localhost:3000/activation/${token}">Activate account</a>
           <hr />
           <p>This email may contain sensetive information</p>
           <p>and link will  expired in 60 minutes</p>
       `
     };
 
-    req.body.activated_token = token;
+    req.body.activatedToken = token;
 
     let user = await Users.create(req.body).catch(err => {
-       return res.json({
-          result: "error",
-          message: err.message
-        });
-    })
+      return res.json({
+        result: "error",
+        message: err.message
+      });
+    });
 
- 
+
     sgMail
       .send(emailData)
       .then(sent => {
-        // console.log('SIGNUP EMAIL SENT', sent)
+        console.log('SIGNUP EMAIL SENT', sent)
         return res.json({
           result: "success",
           message: `Email has been sent to ${email}. Follow the instruction to activate your account`
@@ -95,7 +95,7 @@ app.post("/login", async (req, res) => {
       };
 
       let token = jwt.sign(payload);
-      
+
       res.json({ result: "success", token, message: "Login successfully" });
 
     } else {
