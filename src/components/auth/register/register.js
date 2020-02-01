@@ -1,17 +1,11 @@
 import React, { Component } from 'react';
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from 'axios';
 import swal from "sweetalert";
-import apis from '../apis/apis';
+import apis from '../../../apis/apis';
 import { Link } from "react-router-dom";
 
 const SignupSchema = Yup.object().shape({
-
-  username: Yup.string()
-    .min(2, "username is Too Short!")
-    .max(50, "username is Too Long!")
-    .required("username is Required"),
   email: Yup.string()
     .email("Invalid email")
     .required("Email is Required"),
@@ -57,7 +51,7 @@ class Register extends Component {
     return (
       <form onSubmit={handleSubmit} >
 
-        {errors.username && touched.username ? (
+        {/*         {errors.username && touched.username ? (
           <small id="passwordHelp" className="text-danger">
             {errors.username}
           </small>
@@ -83,7 +77,7 @@ class Register extends Component {
               <span className="fas fa-user" />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {errors.email && touched.email ? (
           <small id="passwordHelp" className="text-danger">
@@ -221,7 +215,7 @@ class Register extends Component {
               >
                 {props => this.showForm(props)}
               </Formik>
-              <Link to="/login">Register a new membership</Link>
+              <Link to="/login">Login</Link>
             </div>
             {/* /.form-box */}
           </div>{/* /.card */}

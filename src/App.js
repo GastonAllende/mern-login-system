@@ -1,8 +1,11 @@
 import React from 'react';
 import Home from './components/home';
 import Dashboard from "./components/dashboard";
-import Register from './components/register';
-import Login from './components/login';
+import Register from './components/auth/register';
+import Login from './components/auth/login';
+import Passwordforgot from './components/auth/passwordforgot';
+import Passwordreset from './components/auth/passwordreset';
+
 
 import {
   BrowserRouter as Router,
@@ -18,7 +21,7 @@ const isLoggedIn = () => {
 };
 
 // Protected Route
-const SecuredRoute = ({ component: Component, ...rest }) => (  
+const SecuredRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props =>
@@ -37,12 +40,13 @@ function App() {
     <Router>
       <Switch>
         <Route exact path="/" component={Home} />
-        <SecuredRoute path="/dashboard" component={Dashboard} />
         <Route path="/register" component={Register} />
-        <Route path="/login" component={Login} />
+        <Route path="/login/:notify?" component={Login} />
+        <SecuredRoute path="/dashboard" component={Dashboard} />
+        <Route path="/password-reset/:token" component={Passwordreset} />
+        <Route path="/password-forgot" component={Passwordforgot} />
       </Switch>
     </Router>
-
   );
 }
 

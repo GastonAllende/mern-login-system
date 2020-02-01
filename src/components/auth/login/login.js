@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from 'axios';
 import swal from "sweetalert";
-import apis from '../apis/apis';
+import apis from '../../../apis/apis';
 import { Link } from "react-router-dom";
 
 const SignupSchema = Yup.object().shape({
@@ -17,7 +16,18 @@ class Login extends Component {
 
   componentDidMount() {
     if (localStorage.getItem("TOKEN_KEY") != null) {
-      return this.props.history.goBack();
+      return this.props.history.push('/dashboard');
+    }
+    let notify = this.props.match.params.notify
+    console.log(this.props);
+    console.log(this.props.match.params);
+
+    if (notify !== undefined) {
+      if (notify === 'error') {
+        swal("Activation Fail please try again !", '', "error")
+      } else if (notify === 'success') {
+        swal("Activation Success your can login !", '', "success")
+      }
     }
   }
 
@@ -54,9 +64,7 @@ class Login extends Component {
     return (
       <form onSubmit={handleSubmit} >
         {errors.email && touched.email ? (
-          <small id="passwordHelp" className="text-danger">
-            {errors.email}
-          </small>
+          <small id="passwordHelp" className="text-danger">{errors.email}</small>
         ) : null}
 
         <div className="input-group mb-3">
@@ -160,7 +168,7 @@ class Login extends Component {
                 {props => this.showForm(props)}
               </Formik>
               <p className="mb-1">
-                <a href="forgot-password.html">I forgot my password</a>
+                <Link to="/password-forgot">I forgot my password</Link>
               </p>
               <p className="mb-0">
                 <Link to="/register">Register a new membership</Link>
