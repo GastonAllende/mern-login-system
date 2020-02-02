@@ -12,6 +12,7 @@ const PasswordForgotSchema = Yup.object().shape({
 
 class Passwordforgot extends Component {
   constructor(props) {
+
     super(props);
 
     this.state = {
@@ -47,7 +48,7 @@ class Passwordforgot extends Component {
     setFieldValue
   }) => {
     return (
-      <form role="form" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className="card-body">
           <div className="form-group  has-feedback">
             <label htmlFor="email">Email address</label>

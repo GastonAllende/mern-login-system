@@ -31,7 +31,7 @@ app.post("/register", async (req, res) => {
   try {
     req.body.password = await bcrypt.hash(req.body.password, 8);
 
-    //const { username, email } = req.body;
+    //const { email } = req.body;
     const { email } = req.body;
 
     const token = jsonwebtoken.sign(
@@ -170,7 +170,7 @@ app.post("/password/reset", async (req, res) => {
 
     const token = jsonwebtoken.sign(
       { _id: user._id, name: user.first_name },
-      "process.env.JWT_RESET_PASSWORD",
+      "JWT_RESET_PASSWORD",
       {
         expiresIn: expired_time
       }
@@ -182,7 +182,7 @@ app.post("/password/reset", async (req, res) => {
       subject: `Password Reset link`,
       html: `
                 <h1>Please use the following link to reset your password</h1>
-                <a href="http://localhost:3000/password-reset/${token}">Reset passord link</p>
+                <a href="http://localhost:3000/password-reset/${token}">Reset passord link</a>
                 <hr />
                 <p>This link will expired in 60 minutes</p>
                 
@@ -191,7 +191,6 @@ app.post("/password/reset", async (req, res) => {
 
     user.updateOne({ resetPasswordToken: token }, (err, success) => {
       if (err) {
-        console.log("RESET PASSWORD LINK ERROR", err);
         return res.status(400).json({
           result: "error",
           message: "Database connection error on user password forgot request"
@@ -213,3 +212,41 @@ app.post("/password/reset", async (req, res) => {
   });
 });
 
+app.put("/password/reset", async (req, res) => {
+  const { password } = req.body;
+  let resetPasswordToken = req.query.token;
+  if (resetPasswordToken) {
+    jsonwebtoken.verify(
+      resetPasswordToken,
+      "JWT_RESET_PASSWORD",
+      function (err, decoded) {
+        if (err) {
+          return res.json({
+            result: "error",
+            message: "Expired link. Try again"
+          });
+        }
+      }
+    );
+    let encrypt_pass = await bcrypt.hash(password, 8);
+    let updatedFields = {
+      password: encrypt_pass,
+      resetPasswordToken: ""
+    };
+
+    await Users.findOneAndUpdate(
+      { resetPasswordToken: resetPasswordToken },
+      updatedFields
+    ).then(responses => {
+      return res.json({
+        result: "success",
+        message: "Password update succesfully your can try login again"
+      });
+    });
+  } else {
+    return res.json({
+      result: "error",
+      message: "No Found Token"
+    });
+  }
+});
