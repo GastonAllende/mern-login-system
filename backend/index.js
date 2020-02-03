@@ -152,8 +152,6 @@ app.get("/activation/:token", async (req, res) => {
   }
 });
 
-
-
 app.post("/password/reset", async (req, res) => {
 
   let expired_time = "60m";
@@ -181,10 +179,10 @@ app.post("/password/reset", async (req, res) => {
       to: email,
       subject: `Password Reset link`,
       html: `
-                <h1>Please use the following link to reset your password</h1>
-                <a href="http://localhost:3000/password-reset/${token}">Reset passord link</a>
-                <hr />
-                <p>This link will expired in 60 minutes</p>
+              <h1>Please use the following link to reset your password</h1>
+              <a href="http://localhost:3000/password-reset/${token}">Reset passord link</a>
+              <hr />
+              <p>This link will expired in 60 minutes</p>
                 
             `
     };
