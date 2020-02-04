@@ -22,7 +22,6 @@ class Register extends Component {
     apis
       .post("/api/user/register", values)
       .then(res => {
-        console.log(res.data.result);
         if (res.data.result === "success") {
           swal("Success!", res.data.message, "success")
             .then(value => {
