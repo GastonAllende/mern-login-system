@@ -20,7 +20,7 @@ class Register extends Component {
 
   submitForm = (values, history) => {
     apis
-      .post("/register", values)
+      .post("/api/user/register", values)
       .then(res => {
         console.log(res.data.result);
         if (res.data.result === "success") {
@@ -50,35 +50,6 @@ class Register extends Component {
 
     return (
       <form onSubmit={handleSubmit} >
-
-        {/*         {errors.username && touched.username ? (
-          <small id="passwordHelp" className="text-danger">
-            {errors.username}
-          </small>
-        ) : null}
-
-
-        <div className="input-group mb-3">
-          <input
-            type="text"
-            name="username"
-            onChange={handleChange}
-            value={values.username}
-            placeholder="Username"
-            className={
-              errors.username && touched.username
-                ? "form-control is-invalid"
-                : "form-control"
-            }
-          />
-
-          <div className="input-group-append">
-            <div className="input-group-text">
-              <span className="fas fa-user" />
-            </div>
-          </div>
-        </div> */}
-
         {errors.email && touched.email ? (
           <small id="passwordHelp" className="text-danger">
             {errors.email}
@@ -198,8 +169,8 @@ class Register extends Component {
               <p className="login-box-msg">Register a new membership</p>
 
               <Formik
+
                 initialValues={{
-                  username: "",
                   email: "",
                   password: "",
                   confirm_password: ""

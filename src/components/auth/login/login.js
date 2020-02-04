@@ -19,9 +19,6 @@ class Login extends Component {
       return this.props.history.push('/dashboard');
     }
     let notify = this.props.match.params.notify
-    console.log(this.props);
-    console.log(this.props.match.params);
-
     if (notify !== undefined) {
       if (notify === 'error') {
         swal("Activation Fail please try again !", '', "error")
@@ -33,7 +30,7 @@ class Login extends Component {
 
   submitForm = (values, history) => {
     apis
-      .post("/login", values)
+      .post("/api/auth/login", values)
       .then(res => {
         if (res.data.result === "success") {
           localStorage.setItem("TOKEN_KEY", res.data.token);
@@ -158,7 +155,6 @@ class Login extends Component {
                 }}
 
                 onSubmit={(values, { setSubmitting }) => {
-                  console.log(values);
                   this.submitForm(values, this.props.history);
                   setSubmitting(false);
                 }}

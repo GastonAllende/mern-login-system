@@ -23,18 +23,9 @@ class Passwordreset extends Component {
       token: this.props.match.params.token
     };
 
-    this.showToken(this.state.token);
-
   }
 
-
-
-  showToken(token) {
-    console.log(token);
-  };
-
   submitForm = async (values, history, token) => {
-
     await axios
       .put("http://localhost:8080/password/reset?token=" + token, values)
       .then(res => {
@@ -48,7 +39,6 @@ class Passwordreset extends Component {
         }
       })
       .catch(error => {
-        console.log(error);
         swal("Error!", "Unexpected error", "error");
       });
   };
