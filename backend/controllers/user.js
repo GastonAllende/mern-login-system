@@ -1,16 +1,10 @@
-const express = require('express')
-const router = express.Router()
 const users = require('../models/user')
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const sgMail = require("@sendgrid/mail");
 require('dotenv').config()
 
-const userController = require('../controllers/user');
-
-router.post("/register", userController.registerUser)
-
-/* router.post("/register", async (req, res) => {
+exports.registerUser = async (req, res) => {
   try {
     req.body.password = await bcrypt.hash(req.body.password, 8);
     const { email } = req.body;
@@ -59,6 +53,4 @@ router.post("/register", userController.registerUser)
   } catch (err) {
     res.json({ result: "error", message: err.message });
   }
-}); */
-
-module.exports = router;
+};
