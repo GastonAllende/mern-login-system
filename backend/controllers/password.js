@@ -1,19 +1,12 @@
 
-const express = require('express')
-const router = express.Router()
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const sgMail = require("@sendgrid/mail");
 const users = require('../models/user')
-const passwordController = require('../controllers/password');
 
-/* router.post("/forgot", passwordController.forgotPassword);
-router.put("/reset", passwordController.resetPassword); */
-
-router.post("/reset", async (req, res) => {
+exports.forgotPassword = async (req, res) => {
 
   let expired_time = "60m";
-
   const { email } = req.body;
 
   users.findOne({ email }, (err, user) => {
@@ -66,9 +59,9 @@ router.post("/reset", async (req, res) => {
       }
     });
   });
-});
+}
 
-router.put("/reset", async (req, res) => {
+exports.resetPassword = async (req, res) => {
   const { password } = req.body;
   let resetPasswordToken = req.query.token;
   if (resetPasswordToken) {
@@ -105,6 +98,5 @@ router.put("/reset", async (req, res) => {
       message: "No Found Token"
     });
   }
-});
+}
 
-module.exports = router;

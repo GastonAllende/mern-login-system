@@ -17,6 +17,6 @@ app.listen(PORT, () => {
 });
 
 app.use('/api/user', require('./routes/user'));
-app.use('/api/auth', require('./routes/auth'));
-app.use('/password', require('./routes/password'));
+//app.use('/api/auth', require('./routes/auth'));
+//app.use('/password', require('./routes/password'));
 
