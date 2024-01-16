@@ -1,2 +1,2 @@
-# mern-login-system - ongoing project
+# mern-login-system
 Mongo, Express, React and Node login system
